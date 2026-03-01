@@ -66,7 +66,7 @@ def get_stock_pool(context):
         if is_suspended(stock, context.current_dt):
             continue
         # 排除上市时间小于60天的股票
-        if (context.current_dt - get_security_info(stock).start_date).days < 60:
+        if (context.current_dt.date() - get_security_info(stock).start_date).days < 60:
             continue
             
         filtered_stocks.append(stock)
