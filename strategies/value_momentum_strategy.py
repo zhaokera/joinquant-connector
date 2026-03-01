@@ -301,10 +301,10 @@ def get_stock_pool(context):
                         # 连续盈利（排除ST风险）
                         if not (np.isnan(row['roe']) or np.isnan(row['pe_ratio']) or np.isnan(row['pb_ratio'])):
                             # ROE > 0 (盈利)
-                        if row['roe'] > 0:
-                            # 负债率合理
-                            if row['total_assets'] > 0 and row['total_liability'] / row['total_assets'] < 0.8:
-                                quality_filtered.append(stock)
+                            if row['roe'] > 0:
+                                # 负债率合理
+                                if row['total_assets'] > 0 and row['total_liability'] / row['total_assets'] < 0.8:
+                                    quality_filtered.append(stock)
 
                 eligible_stocks = quality_filtered
                 log.info(f"财务筛选后: {len(eligible_stocks)} 只股票")
