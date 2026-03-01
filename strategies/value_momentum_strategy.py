@@ -280,23 +280,35 @@ def get_stock_pool(context):
         # =====================================
 
         if len(eligible_stocks) > 0:
-            # 获取财务指标（只使用聚宽indicator表中存在的字段）
+            # 获取财务指标（indicator表只包含roe等财务指标）
             financial = get_fundamentals(
                 query(
-                    indicator.code, indicator.roe,
-                    indicator.pe_ratio, indicator.pb_ratio
+                    indicator.code, indicator.roe
                 ).filter(indicator.code.in_(eligible_stocks)),
+                date=current_date
+            )
+
+            # 获取估值指标（valuation表包含pe_ratio, pb_ratio等）
+            valuation_fund = get_fundamentals(
+                query(
+                    valuation.code, valuation.pe_ratio, valuation.pb_ratio
+                ).filter(valuation.code.in_(eligible_stocks)),
                 date=current_date
             )
 
             if not financial.empty:
                 financial.set_index('code', inplace=True)
+            if not valuation_fund.empty:
+                valuation_fund.set_index('code', inplace=True)
+
+                # 合并数据
+                merged = financial.join(valuation_fund, how='inner')
 
                 # 过滤财务异常股票
                 quality_filtered = []
                 for stock in eligible_stocks:
-                    if stock in financial.index:
-                        row = financial.loc[stock]
+                    if stock in merged.index:
+                        row = merged.loc[stock]
                         # 连续盈利（排除ST风险）
                         if not (np.isnan(row['roe']) or np.isnan(row['pe_ratio']) or np.isnan(row['pb_ratio'])):
                             # ROE > 0 (盈利)
