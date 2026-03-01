@@ -281,7 +281,7 @@ def get_stock_pool(context):
 
         if len(eligible_stocks) > 0:
             # 获取财务指标（indicator表只包含roe等财务指标）
-            financial = get_fundamentals(
+            financial_df = get_fundamentals(
                 query(
                     indicator.code, indicator.roe
                 ).filter(indicator.code.in_(eligible_stocks)),
@@ -289,23 +289,24 @@ def get_stock_pool(context):
             )
 
             # 获取估值指标（valuation表包含pe_ratio, pb_ratio等）
-            valuation_fund = get_fundamentals(
+            valuation_df = get_fundamentals(
                 query(
                     valuation.code, valuation.pe_ratio, valuation.pb_ratio
                 ).filter(valuation.code.in_(eligible_stocks)),
                 date=current_date
             )
 
-            if not financial.empty:
-                financial.set_index('code', inplace=True)
-            if not valuation_fund.empty:
-                valuation_fund.set_index('code', inplace=True)
+            # 合并数据
+            merged = None
+            if not financial_df.empty:
+                financial_df.set_index('code', inplace=True)
+            if not valuation_df.empty:
+                valuation_df.set_index('code', inplace=True)
+                merged = financial_df.join(valuation_df, how='inner')
 
-                # 合并数据
-                merged = financial.join(valuation_fund, how='inner')
-
-                # 过滤财务异常股票
-                quality_filtered = []
+            # 过滤财务异常股票
+            quality_filtered = []
+            if merged is not None and not merged.empty:
                 for stock in eligible_stocks:
                     if stock in merged.index:
                         row = merged.loc[stock]
@@ -315,8 +316,8 @@ def get_stock_pool(context):
                             if row['roe'] > 0:
                                 quality_filtered.append(stock)
 
-                eligible_stocks = quality_filtered
-                log.info(f"财务筛选后: {len(eligible_stocks)} 只股票")
+            eligible_stocks = quality_filtered
+            log.info(f"财务筛选后: {len(eligible_stocks)} 只股票")
 
         # =====================================
         # 第三层：动量筛查
