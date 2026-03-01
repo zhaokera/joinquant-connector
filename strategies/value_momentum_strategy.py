@@ -283,8 +283,8 @@ def get_stock_pool(context):
             # 获取财务指标
             financial = get_fundamentals(
                 query(
-                    indicator.code, indicator.roe, indicator.operating_revenue,
-                    indicator.operating_profit, indicator.total_assets,
+                    indicator.code, indicator.roe,
+                    indicator.total_assets,
                     indicator.total_liability, indicator.pe_ratio, indicator.pb_ratio
                 ).filter(indicator.code.in_(eligible_stocks)),
                 date=current_date
@@ -392,8 +392,7 @@ def hybrid_selection(stocks, context):
             query(
                 indicator.code, indicator.roe, indicator.roa,
                 indicator.gross_profit_margin, indicator.net_profit_margin,
-                indicator.operating_revenue_year_on_year,
-                indicator.operating_profit_year_on_year,
+                indicator.net_profit_year_on_year,
                 indicator.total_assets_turnover, indicator.current_ratio
             ).filter(indicator.code.in_(stocks)),
             date=current_date
