@@ -121,7 +121,7 @@ def check_market_condition(context):
         # 计算市场趋势
         try:
             prices = get_price('000985.XSHG', end_date=context.current_dt, count=20,
-                             fields=['close'], skip_paused=False)
+                             fields=['close'], skip_paused=False, panel=False)
             market_trend = (prices['close'].iloc[-1] - prices['close'].iloc[-10]) / prices['close'].iloc[-10] if len(prices) >= 10 else 0
         except:
             market_trend = 0
@@ -245,7 +245,7 @@ def get_stock_pool(context):
         # 排除停牌股票
         try:
             paused_data = get_price(non_st_stocks, end_date=current_date,
-                                  count=1, fields=['paused'], skip_paused=False)
+                                  count=1, fields=['paused'], skip_paused=False, panel=False)
             trading_stocks = [s for s in non_st_stocks if not paused_data['paused'].iloc[0][s]]
         except:
             trading_stocks = non_st_stocks
@@ -344,9 +344,9 @@ def filter_by_momentum(stocks, context):
         end_date = context.current_dt
         start_date = end_date - timedelta(days=60)
 
-        # 获取价格数据（不能跳过停牌）
+        # 获取价格数据（不能跳过停牌，panel=False 返回 DataFrame）
         prices = get_price(stocks, start_date=start_date, end_date=end_date,
-                          fields=['close'], skip_paused=False)
+                          fields=['close'], skip_paused=False, panel=False)
 
         if prices.empty:
             return stocks
@@ -411,9 +411,9 @@ def hybrid_selection(stocks, context):
         # 2. 获取动量因子数据
         # =====================================
         end_date = current_date
-        prices_1m = get_price(stocks, end_date=end_date, count=20, fields=['close'], skip_paused=False)
-        prices_3m = get_price(stocks, end_date=end_date, count=60, fields=['close'], skip_paused=False)
-        prices_12m = get_price(stocks, end_date=end_date, count=252, fields=['close'], skip_paused=False)
+        prices_1m = get_price(stocks, end_date=end_date, count=20, fields=['close'], skip_paused=False, panel=False)
+        prices_3m = get_price(stocks, end_date=end_date, count=60, fields=['close'], skip_paused=False, panel=False)
+        prices_12m = get_price(stocks, end_date=end_date, count=252, fields=['close'], skip_paused=False, panel=False)
 
         # =====================================
         # 3. 计算各因子得分（标准化）
@@ -792,7 +792,7 @@ def calculate_portfolio_volatility(context, holdings):
         start_date = end_date - timedelta(days=252)
 
         prices = get_price(holdings, start_date=start_date, end_date=end_date,
-                          fields=['close'], skip_paused=False)
+                          fields=['close'], skip_paused=False, panel=False)
 
         if prices.empty or len(prices) < 50:
             return 0.20
@@ -815,7 +815,7 @@ def calculate_market_volatility(context):
     """
     try:
         prices = get_price('000985.XSHG', end_date=context.current_dt, count=20,
-                          fields=['close'], skip_paused=False)
+                          fields=['close'], skip_paused=False, panel=False)
 
         if len(prices) < 5:
             return 0.01
