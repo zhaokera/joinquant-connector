@@ -284,16 +284,16 @@ def get_stock_pool(context):
             # 获取财务指标（indicator表只包含roe等财务指标）
             financial_df = get_fundamentals(
                 query(
-                    Indicator.code, Indicator.roe
-                ).filter(Indicator.code.in_(eligible_stocks)),
+                    indicator.code, indicator.roe
+                ).filter(indicator.code.in_(eligible_stocks)),
                 date=current_date
             )
 
-            # 获取估值指标（Valuation表包含pe_ratio, pb_ratio等）
+            # 获取估值指标（valuation表包含pe_ratio, pb_ratio等）
             valuation_df = get_fundamentals(
                 query(
-                    Valuation.code, Valuation.pe_ratio, Valuation.pb_ratio
-                ).filter(Valuation.code.in_(eligible_stocks)),
+                    valuation.code, valuation.pe_ratio, valuation.pb_ratio
+                ).filter(valuation.code.in_(eligible_stocks)),
                 date=current_date
             )
 
