@@ -344,9 +344,9 @@ def filter_by_momentum(stocks, context):
         end_date = context.current_dt
         start_date = end_date - timedelta(days=60)
 
-        # 获取价格数据
+        # 获取价格数据（不能跳过停牌）
         prices = get_price(stocks, start_date=start_date, end_date=end_date,
-                          fields=['close'], skip_paused=True)
+                          fields=['close'], skip_paused=False)
 
         if prices.empty:
             return stocks
@@ -354,7 +354,7 @@ def filter_by_momentum(stocks, context):
         # 计算动量指标
         momentum_score = {}
         for stock in stocks:
-            if stock in prices.columns and stock in prices.columns:
+            if stock in prices.columns:
                 price_series = prices[stock].dropna()
                 if len(price_series) > 20:
                     # 1个月动量
