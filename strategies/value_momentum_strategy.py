@@ -118,10 +118,18 @@ def check_market_condition(context):
         # 计算市场波动率
         market_vol = calculate_market_volatility(context)
 
+        # 计算市场趋势
+        try:
+            prices = get_price('000985.XSHG', end_date=context.current_dt, count=20,
+                             fields=['close'], skip_paused=True)
+            market_trend = (prices['close'].iloc[-1] - prices['close'].iloc[-10]) / prices['close'].iloc[-10] if len(prices) >= 10 else 0
+        except:
+            market_trend = 0
+
         # 判断市场状态
         if market_vol > 0.02:  # 单日波动>2%为高波动
             g.market_regime = 'volatile'
-        elif context.symbols('000985.XSHG')[0].price > mav glut('000985.XSHG', 20):
+        elif market_trend > 0.05:
             g.market_regime = 'bull'
         else:
             g.market_regime = 'bear'
