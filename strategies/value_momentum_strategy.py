@@ -724,7 +724,7 @@ def adjust_position(context, target_stocks):
 
         # 波动率调整
         try:
-           _volatility = calculate_portfolio_volatility(context, current_holdings)
+            _volatility = calculate_portfolio_volatility(context, current_holdings)
             if _volatility > 0:
                 volatility_factor = g.volatility_target / _volatility
                 volatility_factor = max(0.5, min(1.5, volatility_factor))
@@ -743,7 +743,7 @@ def adjust_position(context, target_stocks):
         log.info(f"目标仓位: {target_position*100:.1f}% (波动率调整: {volatility_factor:.2f})")
 
         # =====================================
-        # 2. 计算.each stock的目标市值
+        # 2. 计算每个股票的目标市值
         # =====================================
 
         total_value = context.portfolio.total_value
