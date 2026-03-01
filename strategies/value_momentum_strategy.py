@@ -121,7 +121,7 @@ def check_market_condition(context):
         # 计算市场趋势
         try:
             prices = get_price('000985.XSHG', end_date=context.current_dt, count=20,
-                             fields=['close'], skip_paused=True)
+                             fields=['close'], skip_paused=False)
             market_trend = (prices['close'].iloc[-1] - prices['close'].iloc[-10]) / prices['close'].iloc[-10] if len(prices) >= 10 else 0
         except:
             market_trend = 0
@@ -411,9 +411,9 @@ def hybrid_selection(stocks, context):
         # 2. 获取动量因子数据
         # =====================================
         end_date = current_date
-        prices_1m = get_price(stocks, end_date=end_date, count=20, fields=['close'], skip_paused=True)
-        prices_3m = get_price(stocks, end_date=end_date, count=60, fields=['close'], skip_paused=True)
-        prices_12m = get_price(stocks, end_date=end_date, count=252, fields=['close'], skip_paused=True)
+        prices_1m = get_price(stocks, end_date=end_date, count=20, fields=['close'], skip_paused=False)
+        prices_3m = get_price(stocks, end_date=end_date, count=60, fields=['close'], skip_paused=False)
+        prices_12m = get_price(stocks, end_date=end_date, count=252, fields=['close'], skip_paused=False)
 
         # =====================================
         # 3. 计算各因子得分（标准化）
@@ -797,7 +797,7 @@ def calculate_portfolio_volatility(context, holdings):
         start_date = end_date - timedelta(days=252)
 
         prices = get_price(holdings, start_date=start_date, end_date=end_date,
-                          fields=['close'], skip_paused=True)
+                          fields=['close'], skip_paused=False)
 
         if prices.empty or len(prices) < 50:
             return 0.20
@@ -820,7 +820,7 @@ def calculate_market_volatility(context):
     """
     try:
         prices = get_price('000985.XSHG', end_date=context.current_dt, count=20,
-                          fields=['close'], skip_paused=True)
+                          fields=['close'], skip_paused=False)
 
         if len(prices) < 5:
             return 0.01
