@@ -390,7 +390,7 @@ def hybrid_selection(stocks, context):
         # =====================================
         # 1. 获取价值因子数据
         # =====================================
-        valuation = get_fundamentals(
+        val_df = get_fundamentals(
             query(
                 valuation.code, valuation.pe_ratio, valuation.pb_ratio,
                 valuation.ps_ratio, valuation.market_cap,
@@ -399,7 +399,7 @@ def hybrid_selection(stocks, context):
             date=current_date
         )
 
-        financial = get_fundamentals(
+        fin_df = get_fundamentals(
             query(
                 indicator.code, indicator.roe, indicator.roa,
                 indicator.gross_profit_margin, indicator.net_profit_margin,
@@ -422,7 +422,7 @@ def hybrid_selection(stocks, context):
         # =====================================
 
         # 价值因子得分
-        value_scores = calculate_value_scores(valuation, financial)
+        value_scores = calculate_value_scores(val_df, fin_df)
 
         # 动量因子得分
         momentum_scores = calculate_momentum_scores(prices_1m, prices_3m, prices_12m, stocks)
