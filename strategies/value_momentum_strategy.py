@@ -402,9 +402,7 @@ def hybrid_selection(stocks, context):
         fin_df = get_fundamentals(
             query(
                 indicator.code, indicator.roe, indicator.roa,
-                indicator.gross_profit_margin, indicator.net_profit_margin,
-                indicator.basic_eps_growth_rate,
-                indicator.total_assets_turnover, indicator.current_ratio
+                indicator.gross_profit_margin, indicator.net_profit_margin
             ).filter(indicator.code.in_(stocks)),
             date=current_date
         )
