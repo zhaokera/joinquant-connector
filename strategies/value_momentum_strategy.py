@@ -403,7 +403,7 @@ def hybrid_selection(stocks, context):
             query(
                 indicator.code, indicator.roe, indicator.roa,
                 indicator.gross_profit_margin, indicator.net_profit_margin,
-                indicator.operating_revenue_year_on_year,
+                indicator.basic_eps_growth_rate,
                 indicator.total_assets_turnover, indicator.current_ratio
             ).filter(indicator.code.in_(stocks)),
             date=current_date
