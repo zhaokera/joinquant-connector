@@ -1,0 +1,33 @@
+{
+  "joinquant": {
+    "username": "your_username",
+    "password": "your_password",
+    "api_key": "your_api_key"
+  },
+  "strategy": {
+    "initial_capital": 1000000,
+    "max_position_size": 0.2,
+    "min_position_size": 0.05,
+    "max_stock_count": 10,
+    "rebalance_frequency": "daily",
+    "risk_management": {
+      "stop_loss_pct": -0.15,
+      "take_profit_pct": 0.30,
+      "max_drawdown_pct": -0.25
+    }
+  },
+  "analysis": {
+    "value_investing": {
+      "min_value_score": 70,
+      "preferred_industries": ["消费", "医药", "科技", "金融"],
+      "avoid_industries": ["周期", "高负债"]
+    },
+    "technical": {
+      "use_macd": true,
+      "use_rsi": true,
+      "use_kdj": true,
+      "rsi_overbought": 70,
+      "rsi_oversold": 30
+    }
+  }
+}
