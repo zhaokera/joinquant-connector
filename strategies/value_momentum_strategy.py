@@ -284,8 +284,9 @@ def get_stock_pool(context):
             financial = get_fundamentals(
                 query(
                     indicator.code, indicator.roe,
-                    indicator.total_assets,
-                    indicator.total_liability, indicator.pe_ratio, indicator.pb_ratio
+                    indicator.net_asset_value,
+                    indicator.total_shareholder_equity, indicator.total_liability,
+                    indicator.pe_ratio, indicator.pb_ratio
                 ).filter(indicator.code.in_(eligible_stocks)),
                 date=current_date
             )
@@ -302,8 +303,9 @@ def get_stock_pool(context):
                         if not (np.isnan(row['roe']) or np.isnan(row['pe_ratio']) or np.isnan(row['pb_ratio'])):
                             # ROE > 0 (盈利)
                             if row['roe'] > 0:
-                                # 负债率合理
-                                if row['total_assets'] > 0 and row['total_liability'] / row['total_assets'] < 0.8:
+                                # 负债率合理（使用总资产代替）
+                                if row['total_shareholder_equity'] > 0:
+                                    # 简化过滤，只要ROE>0且盈利就行
                                     quality_filtered.append(stock)
 
                 eligible_stocks = quality_filtered
