@@ -477,7 +477,7 @@ def calculate_value_scores(valuation, financial):
     """
     计算价值因子得分（基于Fama-French Value思路）
 
-    价值特征：低PE、低PB、低PS、高ROE、低负债
+    价值特征：低PE、低PB、低PS、高ROE
     """
     scores = {}
 
@@ -498,18 +498,13 @@ def calculate_value_scores(valuation, financial):
         roe_score = max(0, min(100, row['roe'] * 5)) if row['roe'] > 0 and not pd.isna(row['roe']) else 0
         profit_margin_score = max(0, min(100, row['net_profit_margin'] * 10)) if row['net_profit_margin'] > 0 and not pd.isna(row['net_profit_margin']) else 0
 
-        # 负债率惩罚
-        debt_ratio = row['total_liability'] / row['total_assets'] if row['total_assets'] > 0 else 1
-        debt_score = max(0, 100 - debt_ratio * 100)
-
-        # 综合价值得分
+        # 综合价值得分（简化，不计算负债率和营运增长）
         score = (
             g.value_subweights['pe'] * pe_score +
             g.value_subweights['pb'] * pb_score +
             g.value_subweights['ps'] * ps_score +
             g.value_subweights['roe'] * roe_score +
-            g.value_subweights['operating_growth'] * profit_margin_score +
-            g.value_subweights['debt_to_equity'] * debt_score
+            g.value_subweights['operating_growth'] * profit_margin_score
         )
 
         scores[stock] = max(0, score)
