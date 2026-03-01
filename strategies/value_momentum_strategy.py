@@ -94,8 +94,8 @@ def initialize(context):
     # 事件驱动调仓：单日大涨/大跌后重新评估
     run_daily(check_market_condition, time='09:30')
 
-    # 每月第一个交易日强制调仓（聚宽run_monthly默认在每月第一个交易日执行）
-    run_monthly(rebalance_on_schedule, time='09:45')
+    # 每月第一个交易日强制调仓（monthday=1 表示每月1号）
+    run_monthly(rebalance_on_schedule, monthday=1, time='09:45')
 
     # 记录初始化完成
     g.initialized = True
