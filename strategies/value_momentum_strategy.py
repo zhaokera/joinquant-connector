@@ -759,18 +759,18 @@ def adjust_position(context, target_stocks):
                 log.info(f"清仓: {stock}")
 
         # 再建仓（按目标仓位分配）
-        available Cash = context.portfolio.available_cash
+        available_cash = context.portfolio.available_cash
 
         # 等权重分配（已限制单票仓位）
         for stock in target_stocks:
             target_value = total_value * target_position
-            if available Cash > target_value:
+            if available_cash > target_value:
                 order_target_value(stock, target_value)
                 log.info(f"调整仓位: {stock} -> {target_value:.0f}")
-                available Cash -= target_value
+                available_cash -= target_value
 
         # 保留现金作为安全边际
-        if available Cash > total_value * 0.05:
+        if available_cash > total_value * 0.05:
             log.info(f"现金储备: {available_cash:.0f}")
 
     except Exception as e:
