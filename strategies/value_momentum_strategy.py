@@ -262,14 +262,15 @@ def get_stock_pool(context):
 
         # 排除市值过小的股票（避免小市值风险）
         try:
-            valuation = get_fundamentals(
-                query(valuation.code, valuation.market_cap)
-                .filter(valuation.code.in_(eligible_stocks)),
+            val_data = get_fundamentals(
+                query(Valuation.code, Valuation.market_cap)
+                .filter(Valuation.code.in_(eligible_stocks)),
                 date=current_date
             )
-            valuation.set_index('code', inplace=True)
-            eligible_stocks = [s for s in eligible_stocks
-                            if s in valuation.index and valuation.loc[s, 'market_cap'] >= g.min_market_cap]
+            if not val_data.empty:
+                val_data.set_index('code', inplace=True)
+                eligible_stocks = [s for s in eligible_stocks
+                                if s in val_data.index and val_data.loc[s, 'market_cap'] >= g.min_market_cap]
         except:
             pass
 
@@ -283,16 +284,16 @@ def get_stock_pool(context):
             # 获取财务指标（indicator表只包含roe等财务指标）
             financial_df = get_fundamentals(
                 query(
-                    indicator.code, indicator.roe
-                ).filter(indicator.code.in_(eligible_stocks)),
+                    Indicator.code, Indicator.roe
+                ).filter(Indicator.code.in_(eligible_stocks)),
                 date=current_date
             )
 
-            # 获取估值指标（valuation表包含pe_ratio, pb_ratio等）
+            # 获取估值指标（Valuation表包含pe_ratio, pb_ratio等）
             valuation_df = get_fundamentals(
                 query(
-                    valuation.code, valuation.pe_ratio, valuation.pb_ratio
-                ).filter(valuation.code.in_(eligible_stocks)),
+                    Valuation.code, Valuation.pe_ratio, Valuation.pb_ratio
+                ).filter(Valuation.code.in_(eligible_stocks)),
                 date=current_date
             )
 
