@@ -394,7 +394,7 @@ def hybrid_selection(stocks, context):
             query(
                 valuation.code, valuation.pe_ratio, valuation.pb_ratio,
                 valuation.ps_ratio, valuation.market_cap,
-                valuation.pcf_ratio, valuation.np_ratio
+                valuation.pcf_ratio
             ).filter(valuation.code.in_(stocks)),
             date=current_date
         )
